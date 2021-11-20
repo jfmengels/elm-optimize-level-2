@@ -43,7 +43,12 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
           && ts.isIdentifier(secondArg.expression)
           && secondArg.expression.text == "_List_fromArray"
         ) {
+
           console.log("2nd arg", secondArg)
+          
+          if (ts.isIdentifier(fn) && fn.text == "$elm$core$List$map") {
+            console.log("fn arg", fn)
+          }
         }
       }
       return ts.visitEachChild(node, visitor, context);
