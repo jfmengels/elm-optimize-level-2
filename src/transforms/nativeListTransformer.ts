@@ -29,8 +29,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
     // const { topScope } = matchElmSource(sourceFile)!;
 
     const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-      const newNode = node;
-
+      let newNode = node;
 
       if (ts.isCallExpression(node)
         && ts.isIdentifier(node.expression)
@@ -48,6 +47,20 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
           
           if (ts.isIdentifier(fn) && fn.text == "$elm$core$List$map") {
             console.log("fn arg", fn)
+            newNode = ts.createCall(
+              ts.createIdentifier('_List_fromArray'),
+              undefined,
+              [
+                ts.createCall(
+                  ts.createPropertyAccess(
+                    secondArg.arguments[0],
+                    'map'
+                  ),
+                  undefined,
+                  [firstArg],
+                )
+              ]
+            );
           }
         }
       }
