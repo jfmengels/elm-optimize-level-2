@@ -87,7 +87,15 @@ console.log(nativeFunctionsToInsert)
 /* Taken from recordUpdate.ts and updated, maybe mutualize these? */
 function prependNodes(nodes: ts.Node[], context: ts.TransformationContext, forTests: boolean) {
   if (forTests) {
-    return (node: ts.Node) => nodes.concat(node);
+    const visitorHelp = (node: ts.Node): ts.VisitResult<ts.Node> => {
+      if (ts.isFunctionDeclaration(node) || ts.isVariableStatement(node)) {
+          return nodes.concat(node);
+      }
+
+      return ts.visitEachChild(node, visitorHelp, context);
+    }
+
+    return visitorHelp;
   }
 
   const visitorHelp = (node: ts.Node): ts.VisitResult<ts.Node> => {
