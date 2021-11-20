@@ -80,12 +80,16 @@ console.log(nativeFunctionsToInsert)
       nativeFunctionNodes.push(ast(nativeFunctions[nativeFunction]));
     }
 
-    return ts.visitNode(newSourceFile, prependNodes(nativeFunctionNodes, context));
+    return ts.visitNode(newSourceFile, prependNodes(nativeFunctionNodes, context, forTests));
   };
 };
 
-/* Taken from recordUpdate.ts, maybe mutualize these? */
-function prependNodes(nodes: ts.Node[], context: ts.TransformationContext) {
+/* Taken from recordUpdate.ts and updated, maybe mutualize these? */
+function prependNodes(nodes: ts.Node[], context: ts.TransformationContext, forTests: boolean) {
+  if (forTests) {
+    return (node: ts.Node) => nodes.concat(node);
+  }
+
   const visitorHelp = (node: ts.Node): ts.VisitResult<ts.Node> => {
       if (isFirstFWrapper(node)) {
           return nodes.concat(node);
