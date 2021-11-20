@@ -51,7 +51,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
           }
         }
       }
-      return ts.visitEachChild(node, visitor, context);
+      return ts.visitEachChild(newNode, visitor, context);
     };
 
     return ts.visitNode(sourceFile, visitor);
