@@ -67,6 +67,11 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
     };
 
     const newAst = ts.visitNode(sourceFile, visitor);
+    
+    if (nativeFunctionsToInsert.size === 0) {
+      return newAst;
+    }
+
     return newAst;
   };
 };
