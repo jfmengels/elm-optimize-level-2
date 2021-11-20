@@ -24,7 +24,7 @@ test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
   const { actual, expected } = transformCode(
     initialCode,
     expectedOutputCode,
-    createNativeListTransformer()
+    createNativeListTransformer(true)
   );
 
   expect(actual).toBe(expected);
@@ -57,7 +57,7 @@ test('it can replace nested List.map on a "_List_fromArray" by nested native map
   const { actual, expected } = transformCode(
     initialCode,
     expectedOutputCode,
-    createNativeListTransformer()
+    createNativeListTransformer(true)
   );
 
   expect(actual).toBe(expected);
@@ -85,7 +85,7 @@ test('it can replace a List.filter on a "_List_fromArray" by a native filter', (
   const { actual, expected } = transformCode(
     initialCode,
     expectedOutputCode,
-    createNativeListTransformer()
+    createNativeListTransformer(true)
   );
 
   expect(actual).toBe(expected);

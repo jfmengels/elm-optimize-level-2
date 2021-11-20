@@ -35,7 +35,7 @@ const nativeFunctions: {[key: string]: string} = {
   "_nativeMutatingFilter": `var _nativeMutatingFilter = () => "ok";`,
 };
 
-export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
+export const createNativeListTransformer = (forTests: boolean): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
     const nativeFunctionsToInsert: Set<string> = new Set();
 
