@@ -38,13 +38,13 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
       ) {
         const [fn, firstArg, secondArg] = node.arguments;
         console.log("A2", node)
-      }
 
-      if (ts.isCallExpression(node)
-        && ts.isIdentifier(node.expression)
-        && node.expression.text == "_List_fromArray"
-      ) {
-        console.log(node)
+        if (ts.isCallExpression(secondArg)
+          && ts.isIdentifier(secondArg.expression)
+          && secondArg.expression.text == "_List_fromArray"
+        ) {
+          console.log("2nd arg", secondArg)
+        }
       }
       return ts.visitEachChild(node, visitor, context);
     };
