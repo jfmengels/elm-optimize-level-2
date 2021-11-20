@@ -31,7 +31,10 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
     const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
       const newNode = node;
 
-      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+      if (ts.isCallExpression(node)
+        && ts.isIdentifier(node.expression)
+        && node.expression.text == "_List_fromArray"
+      ) {
         console.log(node)
       }
       return ts.visitEachChild(node, visitor, context);
