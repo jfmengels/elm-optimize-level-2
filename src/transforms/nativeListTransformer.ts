@@ -37,12 +37,12 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
       ) {
         const [fn, firstArg, secondArg] = node.arguments;
 
-        if (ts.isCallExpression(secondArg)
-          && ts.isIdentifier(secondArg.expression)
-          && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
-        ) {
-
-          if (ts.isIdentifier(fn) && fn.text == LIST_MAP_NAME) {
+        if (ts.isIdentifier(fn) && fn.text == LIST_MAP_NAME) {
+          
+          if (ts.isCallExpression(secondArg)
+            && ts.isIdentifier(secondArg.expression)
+            && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
+          ) {
             return ts.createCall(
               ts.createIdentifier(LIST_FROM_ARRAY_F_NAME),
               undefined,
