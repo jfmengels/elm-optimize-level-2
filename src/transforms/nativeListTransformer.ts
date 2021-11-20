@@ -1,4 +1,5 @@
-import ts from 'typescript';
+import ts, { SourceFile } from 'typescript';
+import { ast } from './utils/create';
 
 /*
 
@@ -29,9 +30,14 @@ const transformations: {[key: string]: string} = {
   "$elm$core$List$filter": "_nativeMutatingFilter",
 };
 
+const nativeFunctions: {[key: string]: string} = {
+  "_nativeMutatingMap": `var _nativeMutatingMap = () => "ok";`,
+  "_nativeMutatingFilter": `var _nativeMutatingFilter = () => "ok";`,
+};
+
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
-    const nativeFunctionsToInsert = new Set();
+    const nativeFunctionsToInsert: Set<string> = new Set();
 
     const visitor = (originalNode: ts.Node): ts.VisitResult<ts.Node> => {
       const node = ts.visitEachChild(originalNode, visitor, context);
@@ -66,12 +72,30 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
       return node;
     };
 
-    const newAst = ts.visitNode(sourceFile, visitor);
-    
-    if (nativeFunctionsToInsert.size === 0) {
-      return newAst;
+    const newSourceFile = ts.visitNode(sourceFile, visitor);
+
+    let nativeFunctionNodes: ts.Node[] = [];
+    for (const nativeFunction of nativeFunctionsToInsert) {
+      nativeFunctionNodes.push(ast(nativeFunctions[nativeFunction]));
     }
 
-    return newAst;
+    return ts.visitNode(newSourceFile, prependNodes(nativeFunctionNodes, context));
   };
 };
+
+/* Taken from recordUpdate.ts, maybe mutualize these? */
+function prependNodes(nodes: ts.Node[], context: ts.TransformationContext) {
+  const visitorHelp = (node: ts.Node): ts.VisitResult<ts.Node> => {
+      if (isFirstFWrapper(node)) {
+          return nodes.concat(node);
+      }
+
+      return ts.visitEachChild(node, visitorHelp, context);
+  }
+
+  return visitorHelp;
+}
+
+function isFirstFWrapper(node: ts.Node): boolean {
+  return ts.isFunctionDeclaration(node) && node?.name?.text === 'F';
+}
