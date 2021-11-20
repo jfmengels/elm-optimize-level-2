@@ -51,6 +51,29 @@ test('it can replace nested List.map on a "_List_fromArray" by nested native map
   expect(actual).toBe(expected);
 });
 
+test('it can replace a List.filter on a "_List_fromArray" by a native filter', () => {
+  const initialCode = `
+  var $author$project$Api$someValue = A2(
+    $elm$core$List$filter,
+    fn,
+    _List_fromArray(
+      ['1', '2']));
+  `;
+
+  const expectedOutputCode = `
+  var $author$project$Api$someValue =
+    _List_fromArray(['1', '2'].filter(fn));
+  `;
+
+  const { actual, expected } = transformCode(
+    initialCode,
+    expectedOutputCode,
+    createNativeListTransformer()
+  );
+
+  expect(actual).toBe(expected);
+});
+
 
 export function transformCode(
   initialCode: string,
