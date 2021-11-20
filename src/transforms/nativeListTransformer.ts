@@ -36,17 +36,13 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
         && node.expression.text == "A2"
       ) {
         const [fn, firstArg, secondArg] = node.arguments;
-        console.log("A2", node)
 
         if (ts.isCallExpression(secondArg)
           && ts.isIdentifier(secondArg.expression)
           && secondArg.expression.text == "_List_fromArray"
         ) {
 
-          console.log("2nd arg", secondArg)
-          
           if (ts.isIdentifier(fn) && fn.text == "$elm$core$List$map") {
-            console.log("fn arg", fn)
             newNode = ts.createCall(
               ts.createIdentifier('_List_fromArray'),
               undefined,
