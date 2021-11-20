@@ -2,10 +2,10 @@ module Suite exposing (suite)
 
 {-| -}
 
-import V8.Benchmark.Runner.Json exposing (..)
 import Dict
 import Json.Encode
 import List
+import V8.Benchmark.Runner.Json exposing (..)
 
 
 type MyType
@@ -216,6 +216,10 @@ suite =
                     }
         , benchmark "Return list literal"
             listLiteral
+        , benchmark "List.map on literals" <|
+            \() ->
+                [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+                    |> List.map (\n -> n + 1)
         , dictBenchmarks
         , functionCalling
         , jsonEncoding
