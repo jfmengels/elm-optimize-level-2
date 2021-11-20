@@ -12,6 +12,8 @@ test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
   `;
 
   const expectedOutputCode = `
+  var _nativeMutatingMap = () => "ok";
+
   var $author$project$Api$someValue =
     _List_fromArray(
       _nativeMutatingMap(
@@ -30,8 +32,6 @@ test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
 
 test('it can replace nested List.map on a "_List_fromArray" by nested native map', () => {
   const initialCode = `
-  var _nativeMutatingMap = () => "ok";
-
   var $author$project$Api$someValue = A2(
     $elm$core$List$map,
     fn2,
