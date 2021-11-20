@@ -22,6 +22,9 @@ var $elm$core$String$join_fn = function (sep, chunks) {
 
 */
 
+const LIST_FROM_ARRAY_F_NAME = '_List_fromArray';
+const LIST_MAP_NAME = "$elm$core$List$map";
+
 
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
@@ -39,12 +42,12 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
 
         if (ts.isCallExpression(secondArg)
           && ts.isIdentifier(secondArg.expression)
-          && secondArg.expression.text == "_List_fromArray"
+          && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
         ) {
 
-          if (ts.isIdentifier(fn) && fn.text == "$elm$core$List$map") {
+          if (ts.isIdentifier(fn) && fn.text == LIST_MAP_NAME) {
             return ts.createCall(
-              ts.createIdentifier('_List_fromArray'),
+              ts.createIdentifier(LIST_FROM_ARRAY_F_NAME),
               undefined,
               [
                 ts.createCall(
