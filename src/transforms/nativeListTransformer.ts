@@ -29,7 +29,7 @@ const LIST_MAP_NAME = "$elm$core$List$map";
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
     const visitor = (originalNode: ts.Node): ts.VisitResult<ts.Node> => {
-      let node = ts.visitEachChild(originalNode, visitor, context);
+      const node = ts.visitEachChild(originalNode, visitor, context);
 
       if (ts.isCallExpression(node)
         && ts.isIdentifier(node.expression)
