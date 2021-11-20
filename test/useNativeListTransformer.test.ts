@@ -13,7 +13,10 @@ test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
 
   const expectedOutputCode = `
   var $author$project$Api$someValue =
-    _List_fromArray(['1', '2'].map(fn));
+    _List_fromArray(
+      _nativeMutatingMap(
+        fn,
+        ['1', '2']));
   `;
 
   const { actual, expected } = transformCode(
@@ -39,7 +42,12 @@ test('it can replace nested List.map on a "_List_fromArray" by nested native map
 
   const expectedOutputCode = `
   var $author$project$Api$someValue =
-    _List_fromArray(['1', '2'].map(fn1).map(fn2));
+    _List_fromArray(
+      _nativeMutatingMap(
+        fn2,
+        _nativeMutatingMap(
+          fn1,
+          ['1', '2'])));
   `;
 
   const { actual, expected } = transformCode(
@@ -62,7 +70,10 @@ test('it can replace a List.filter on a "_List_fromArray" by a native filter', (
 
   const expectedOutputCode = `
   var $author$project$Api$someValue =
-    _List_fromArray(['1', '2'].filter(fn));
+    _List_fromArray(
+      _nativeMutatingFilter(
+        fn,
+        ['1', '2']));
   `;
 
   const { actual, expected } = transformCode(
