@@ -73,10 +73,9 @@ export const createNativeListTransformer = (forTests: boolean): ts.TransformerFa
     };
 
     const newSourceFile = ts.visitNode(sourceFile, visitor);
-console.log(nativeFunctionsToInsert)
+
     let nativeFunctionNodes: ts.Node[] = [];
     for (const nativeFunction of nativeFunctionsToInsert) {
-      console.log(nativeFunctions[nativeFunction])
       nativeFunctionNodes.push(ast(nativeFunctions[nativeFunction]));
     }
 
