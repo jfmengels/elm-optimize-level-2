@@ -36,6 +36,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
         && ts.isIdentifier(node.expression)
         && node.expression.text == "A2"
       ) {
+        const [fn, firstArg, secondArg] = node.arguments;
         console.log("A2", node)
       }
 
