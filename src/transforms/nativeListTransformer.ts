@@ -28,8 +28,8 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
     // todo hack to only inline top level functions
     // const { topScope } = matchElmSource(sourceFile)!;
 
-    const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-      let newNode = node;
+    const visitor = (originalNode: ts.Node): ts.VisitResult<ts.Node> => {
+      let node = ts.visitEachChild(originalNode, visitor, context);
 
       if (ts.isCallExpression(node)
         && ts.isIdentifier(node.expression)
@@ -43,7 +43,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
         ) {
 
           if (ts.isIdentifier(fn) && fn.text == "$elm$core$List$map") {
-            newNode = ts.createCall(
+            return ts.createCall(
               ts.createIdentifier('_List_fromArray'),
               undefined,
               [
@@ -60,7 +60,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
           }
         }
       }
-      return ts.visitEachChild(newNode, visitor, context);
+      return node;
     };
 
     return ts.visitNode(sourceFile, visitor);
