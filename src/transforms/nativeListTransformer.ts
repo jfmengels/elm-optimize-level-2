@@ -66,6 +66,7 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
       return node;
     };
 
-    return ts.visitNode(sourceFile, visitor);
+    const newAst = ts.visitNode(sourceFile, visitor);
+    return newAst;
   };
 };
