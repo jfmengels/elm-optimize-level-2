@@ -40,27 +40,26 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
       ) {
         const [fn, firstArg, secondArg] = node.arguments;
 
-        if (ts.isIdentifier(fn) && transformations.hasOwnProperty(fn.text)) {
-          
-          if (ts.isCallExpression(secondArg)
-            && ts.isIdentifier(secondArg.expression)
-            && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
-          ) {
-            return ts.createCall(
-              ts.createIdentifier(LIST_FROM_ARRAY_F_NAME),
-              undefined,
-              [
-                ts.createCall(
-                  ts.createPropertyAccess(
-                    secondArg.arguments[0],
-                    transformations[fn.text]
-                  ),
-                  undefined,
-                  [firstArg],
-                )
-              ]
-            );
-          }
+        if (ts.isIdentifier(fn)
+          && transformations.hasOwnProperty(fn.text)
+          && ts.isCallExpression(secondArg)
+          && ts.isIdentifier(secondArg.expression)
+          && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
+        ) {
+          return ts.createCall(
+            ts.createIdentifier(LIST_FROM_ARRAY_F_NAME),
+            undefined,
+            [
+              ts.createCall(
+                ts.createPropertyAccess(
+                  secondArg.arguments[0],
+                  transformations[fn.text]
+                ),
+                undefined,
+                [firstArg],
+              )
+            ]
+          );
         }
       }
       return node;
