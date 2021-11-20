@@ -25,8 +25,8 @@ var $elm$core$String$join_fn = function (sep, chunks) {
 const LIST_FROM_ARRAY_F_NAME = '_List_fromArray';
 
 const transformations: {[key: string]: string} = {
-  "$elm$core$List$map": "map",
-  "$elm$core$List$filter": "filter",
+  "$elm$core$List$map": "_nativeMutatingMap",
+  "$elm$core$List$filter": "_nativeMutatingFilter",
 };
 
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
@@ -51,12 +51,9 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
             undefined,
             [
               ts.createCall(
-                ts.createPropertyAccess(
-                  secondArg.arguments[0],
-                  transformations[fn.text]
-                ),
+                ts.createIdentifier(transformations[fn.text]),
                 undefined,
-                [firstArg],
+                [ firstArg, secondArg.arguments[0] ]
               )
             ]
           );
