@@ -2,7 +2,7 @@ import ts from 'typescript';
 
 import { createNativeListTransformer } from '../src/transforms/nativeListTransformer';
 
-test('it can  process nested calls of A2 with non identifiers as the first arg ', () => {
+test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
   const initialCode = `
   var $author$project$Api$someValue = A2(
     $elm$core$List$map,
@@ -14,6 +14,32 @@ test('it can  process nested calls of A2 with non identifiers as the first arg '
   const expectedOutputCode = `
   var $author$project$Api$someValue =
     _List_fromArray(['1', '2'].map(fn));
+  `;
+
+  const { actual, expected } = transformCode(
+    initialCode,
+    expectedOutputCode,
+    createNativeListTransformer()
+  );
+
+  expect(actual).toBe(expected);
+});
+
+test('it can replace nested List.map on a "_List_fromArray" by nested native map', () => {
+  const initialCode = `
+  var $author$project$Api$someValue = A2(
+    $elm$core$List$map,
+    fn2,
+    A2(
+      $elm$core$List$map,
+      fn1,
+      _List_fromArray(
+        ['1', '2'])));
+  `;
+
+  const expectedOutputCode = `
+  var $author$project$Api$someValue =
+    _List_fromArray(['1', '2'].map(fn1).map(fn2));
   `;
 
   const { actual, expected } = transformCode(
