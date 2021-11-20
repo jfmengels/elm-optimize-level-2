@@ -28,9 +28,6 @@ const LIST_MAP_NAME = "$elm$core$List$map";
 
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
-    // todo hack to only inline top level functions
-    // const { topScope } = matchElmSource(sourceFile)!;
-
     const visitor = (originalNode: ts.Node): ts.VisitResult<ts.Node> => {
       let node = ts.visitEachChild(originalNode, visitor, context);
 
