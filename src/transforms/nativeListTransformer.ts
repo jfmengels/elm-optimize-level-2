@@ -31,6 +31,8 @@ const transformations: {[key: string]: string} = {
 
 export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFile> => (context) => {
   return (sourceFile) => {
+    const nativeFunctionsToInsert = new Set();
+
     const visitor = (originalNode: ts.Node): ts.VisitResult<ts.Node> => {
       const node = ts.visitEachChild(originalNode, visitor, context);
 
@@ -46,6 +48,8 @@ export const createNativeListTransformer = (): ts.TransformerFactory<ts.SourceFi
           && ts.isIdentifier(secondArg.expression)
           && secondArg.expression.text == LIST_FROM_ARRAY_F_NAME
         ) {
+
+          nativeFunctionsToInsert.add(transformations[fn.text]);
           return ts.createCall(
             ts.createIdentifier(LIST_FROM_ARRAY_F_NAME),
             undefined,
