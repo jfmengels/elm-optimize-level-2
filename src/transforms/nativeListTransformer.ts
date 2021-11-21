@@ -27,12 +27,29 @@ const LIST_FROM_ARRAY_F_NAME = '_List_fromArray';
 
 const transformations: {[key: string]: string} = {
   "$elm$core$List$map": "_nativeMutatingMap",
-  "$elm$core$List$filter": "_nativeMutatingFilter",
+  "$elm$core$List$filter": "_nativeJsArrayFilter",
 };
 
 const nativeFunctions: {[key: string]: string} = {
-  "_nativeMutatingMap": `var _nativeMutatingMap = () => "ok";`,
-  "_nativeMutatingFilter": `var _nativeMutatingFilter = () => "ok";`,
+  "_nativeMutatingMap":
+    `function _mutatingJsArrayMap(mapper, arr) {
+      var len = arr.length;
+      for (var i = 0; i < len; i++) {
+          arr[i] = mapper(arr[i]);
+      }
+      return arr;
+    }`,
+
+  "_nativeJsArrayFilter":
+    `function _nativeJsArrayFilter(pred, arr) {
+      var res = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (pred(arr[i])) {
+          res.push(arr[i]);
+        }
+      }
+      return res;
+    };`,
 };
 
 export const createNativeListTransformer = (forTests: boolean): ts.TransformerFactory<ts.SourceFile> => (context) => {

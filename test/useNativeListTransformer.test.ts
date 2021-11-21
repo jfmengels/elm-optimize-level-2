@@ -12,7 +12,14 @@ test('it can replace a List.map on a "_List_fromArray" by a native map', () => {
   `;
 
   const expectedOutputCode = `
-  var _nativeMutatingMap = () => "ok";
+  function _mutatingJsArrayMap(mapper, arr) {
+    var len = arr.length;
+    for (var i = 0; i
+      < len; i++) {
+        arr[i] = mapper(arr[i]);
+    }
+    return arr;
+  }
 
   var $author$project$Api$someValue =
     _List_fromArray(
@@ -43,7 +50,13 @@ test('it can replace nested List.map on a "_List_fromArray" by nested native map
   `;
 
   const expectedOutputCode = `
-  var _nativeMutatingMap = () => "ok";
+  function _mutatingJsArrayMap(mapper, arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        arr[i] = mapper(arr[i]);
+    }
+    return arr;
+  }
 
   var $author$project$Api$someValue =
     _List_fromArray(
@@ -73,11 +86,19 @@ test('it can replace a List.filter on a "_List_fromArray" by a native filter', (
   `;
 
   const expectedOutputCode = `
-  var _nativeMutatingFilter = () => "ok";
+  function _nativeJsArrayFilter(pred, arr) {
+    var res = [];
+    for (var i = 0; i < arr.length; i++) {
+      if (pred(arr[i])) {
+        res.push(arr[i]);
+      }
+    }
+    return res;
+  }
 
   var $author$project$Api$someValue =
     _List_fromArray(
-      _nativeMutatingFilter(
+      _nativeJsArrayFilter(
         fn,
         ['1', '2']));
   `;
