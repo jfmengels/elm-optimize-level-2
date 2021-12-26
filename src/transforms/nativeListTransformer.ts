@@ -33,6 +33,7 @@ const transformations: {[key: string]: string} = {
   "$elm$core$List$map": "_nativeMutatingMap",
   "$elm$core$List$filter": "_nativeJsArrayFilter",
   "$elm$core$List$drop": "_nativeJsArrayDrop",
+  "$elm$core$List$take": "_nativeJsArrayTake",
 };
 
 const nativeFunctions: {[key: string]: string} = {
@@ -59,6 +60,11 @@ const nativeFunctions: {[key: string]: string} = {
   "_nativeJsArrayDrop":
     `function _nativeJsArrayDrop(n, arr) {
       return arr.slice(n);
+    };`,
+
+  "_nativeJsArrayTake":
+    `function _nativeJsArrayTake(n, arr) {
+      return arr.slice(0, n);
     };`,
 };
 

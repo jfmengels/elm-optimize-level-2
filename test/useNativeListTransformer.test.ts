@@ -142,6 +142,36 @@ test('it can replace a List.drop on a "_List_fromArray" by a native slice', () =
   expect(actual).toBe(expected);
 });
 
+test('it can replace a List.take on a "_List_fromArray" by a native slice', () => {
+  const initialCode = `
+  var $author$project$Api$someValue = A2(
+    $elm$core$List$take,
+    n,
+    _List_fromArray(
+      something));
+  `;
+
+  const expectedOutputCode = `
+  function _nativeJsArrayTake(n, arr) {
+    return arr.slice(0, n);
+  }
+
+  var $author$project$Api$someValue =
+    _List_fromArray(
+      _nativeJsArrayTake(
+        n,
+        something));
+  `;
+
+  const { actual, expected } = transformCode(
+    initialCode,
+    expectedOutputCode,
+    createNativeListTransformer(true)
+  );
+
+  expect(actual).toBe(expected);
+});
+
 
 export function transformCode(
   initialCode: string,
