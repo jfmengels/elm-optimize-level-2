@@ -7,12 +7,11 @@ Use functions that deal with JS Arrays when encountering List functions applied 
 
 JS Arrays are denser, and therefore faster to iterate through.
 
-Split out function definitions so that the raw version of the function can be called.
-
-This only shows benefit with the `createFuncInlineTransformer`, which will detect when an F3 is being called with 3 arguments and skip the F3 call
+TODO rest of documentation
 
 initial
 
+TODO
 var $elm$core$String$join = F2(function (sep, chunks) {
   return A2(_String_join, sep, _List_toArray(chunks));
 });
@@ -20,12 +19,19 @@ var $elm$core$String$join = F2(function (sep, chunks) {
 
 transformed
 
+TODO
 var $elm$core$String$join_fn = function (sep, chunks) {
   return A2(_String_join, sep, _List_toArray(chunks));
 }, $elm$core$String$join = F2($elm$core$String$join_fn);
 
 
 */
+
+// TODO Change `_List_toArray(_List_fromArray(x))` to `x`
+// TODO Change `_List_fromArray(_List_toArray(x))` to `x`
+// TODO Inline _List_sortBy / $elm$core$List$sortBy / $elm$core$List$sort
+//      so that we can remove the `_List_toArray` and re-use the `_List_fromArray` when used with other functions.
+// TODO Same for _List_sortWith / $elm$core$List$sortWith
 
 const LIST_FROM_ARRAY_F_NAME = '_List_fromArray';
 
