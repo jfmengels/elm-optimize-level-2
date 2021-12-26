@@ -3,6 +3,10 @@ import { ast } from './utils/create';
 
 /*
 
+Use functions that deal with JS Arrays when encountering List functions applied on the result of `_List_fromArray` calls.
+
+JS Arrays are denser, and therefore faster to iterate through.
+
 Split out function definitions so that the raw version of the function can be called.
 
 This only shows benefit with the `createFuncInlineTransformer`, which will detect when an F3 is being called with 3 arguments and skip the F3 call
@@ -28,6 +32,7 @@ const LIST_FROM_ARRAY_F_NAME = '_List_fromArray';
 const transformations: {[key: string]: string} = {
   "$elm$core$List$map": "_nativeMutatingMap",
   "$elm$core$List$filter": "_nativeJsArrayFilter",
+  "$elm$core$List$drop": "_nativeJsArrayDrop",
 };
 
 const nativeFunctions: {[key: string]: string} = {
@@ -49,6 +54,11 @@ const nativeFunctions: {[key: string]: string} = {
         }
       }
       return res;
+    };`,
+
+  "_nativeJsArrayDrop":
+    `function _nativeJsArrayDrop(n, arr) {
+      return arr.slice(n);
     };`,
 };
 
