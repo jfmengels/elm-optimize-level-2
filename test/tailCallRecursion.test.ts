@@ -1115,6 +1115,57 @@ test('should optimize a function that concatenates strings to the result of recu
   expect(actual).toBe(expected);
 });
 
+test('should optimize a function that concatenates lists at the beginning', () => {
+  // Corresponds to the following Elm code
+  // repeatList : Int -> List a -> List a
+  // repeatList n list =
+  //     if n <= 0 then
+  //         []
+  //     else
+  //         list ++ repeatList (n - 1) list
+
+  const initialCode = `
+  var $something$repeatList = F2(
+    function (n, list) {
+      return (n <= 0) ? _List_Nil : _Utils_ap(
+        list,
+        A2($something$repeatList, n - 1, list));
+    });
+  `;
+
+  const expectedOutputCode = `
+  function _Utils_copyListAndGetEnd(root, xs) {
+    for (; xs.b; xs = xs.b) {
+      root = root.b = _List_Cons(xs.a, _List_Nil);
+    }
+    return root;
+  }
+
+  var $something$repeatList = F2(
+    function (n, list) {
+      var $start = _List_Cons(undefined, _List_Nil);
+      var $end = $start;
+      repeatList: while (true) {
+        if ((n <= 0)) {
+          return $start.b;
+        } else {
+          $end = _Utils_copyListAndGetEnd($end, list);
+          n = n - 1;
+          continue repeatList;
+        }
+      }
+    });
+  `;
+
+  const { actual, expected } = transformCode(
+    initialCode,
+    expectedOutputCode,
+    createTailCallRecursionTransformer
+  );
+
+  expect(actual).toBe(expected);
+});
+
 test('should optimize a function that concatenates strings on both sides of the result of recursive calls (String.pad-like)', () => {
   // Corresponds to the following Elm code
   // pad : Int -> String
