@@ -173,6 +173,7 @@ enum RecursionType {
   MultipleDataConstructionRecursion,
   AddRecursion,
   StringConcatRecursion,
+  ConcatRecursion,
   MultiplyRecursion,
 };
 
@@ -212,6 +213,7 @@ type Recursion
   | MultipleDataConstructionRecursion
   | AddRecursion
   | MultiplyRecursion
+  | ConcatRecursion
 
 type NotRecursive =
   {
@@ -262,6 +264,15 @@ type AddRecursion =
     right : ts.Expression | null,
     arguments : Array<ts.Expression>,
     adding: "numbers" | "strings" | null
+  }
+
+type ConcatRecursion =
+  {
+    kind: RecursionType.ConcatRecursion,
+    left : ts.Expression | null,
+    right : ts.Expression | null,
+    arguments : Array<ts.Expression>,
+    adding: "strings" | "lists" | null
   }
 
 type MultiplyRecursion =
