@@ -781,6 +781,7 @@ function updateReturnStatement(
         case RecursionType.NotRecursive:
         case RecursionType.AddRecursion:
         case RecursionType.MultiplyRecursion:
+        case RecursionType.ConcatRecursion:
         case RecursionType.ConsRecursion:
         case RecursionType.DataConstructionRecursion:
         case RecursionType.MultipleDataConstructionRecursion: {
@@ -989,6 +990,13 @@ function toFunctionRecursion(recursion : Recursion | NotRecursive) : FunctionRec
         return { kind: RecursionType.StringConcatRecursion, left: !!recursion.left, right: !!recursion.right };
       }
       return { kind: RecursionType.AddRecursion };
+    case RecursionType.ConcatRecursion:
+      if (recursion.adding === "strings") {
+        return { kind: RecursionType.StringConcatRecursion, left: !!recursion.left, right: !!recursion.right };
+      }
+      // TODO Support recursion with concatenation?
+      // TODO It might still be plain recursive in some places?
+      return { kind: RecursionType.NotRecursive };
     case RecursionType.MultiplyRecursion:
       return { kind: RecursionType.MultiplyRecursion };
   }
