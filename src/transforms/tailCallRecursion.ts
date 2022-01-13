@@ -364,7 +364,7 @@ function determineRecursionType(functionName : string, body : ts.Node) : Functio
       || refinement.isMissingInformation
   ) {
     const next = iter.next();
-    if (next.done) { return recursionType; }
+    if (next.done) { break; }
     expression = next.value;
 
     const expressionRecursion : FunctionRecursion | NotRecursiveFunction = toFunctionRecursion(extractRecursionKindFromExpression(functionName, expression));
@@ -386,7 +386,7 @@ function determineRecursionType(functionName : string, body : ts.Node) : Functio
     return { kind: FunctionRecursionKind.F_NotRecursive };
   }
 
-  return recursionType;
+  return refinement.recursionType;
 }
 
 function* findReturnStatements(body : ts.Node) : Generator<ts.Expression, void, null> {
