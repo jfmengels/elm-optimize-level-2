@@ -360,9 +360,8 @@ function determineRecursionType(functionName : string, body : ts.Node) : Functio
   let expression : ts.Expression | undefined;
 
   while (
-    recursionType.kind === FunctionRecursionKind.F_NotRecursive
-      || recursionType.kind === FunctionRecursionKind.F_PlainRecursion
-      || recursionType.kind === FunctionRecursionKind.F_DataConstructionRecursion
+    refinement.recursionType.kind === FunctionRecursionKind.F_NotRecursive
+      || refinement.isMissingInformation
   ) {
     const next = iter.next();
     if (next.done) { return recursionType; }
