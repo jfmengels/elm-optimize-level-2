@@ -1127,9 +1127,9 @@ test('should optimize a function that concatenates lists at the beginning', () =
   const initialCode = `
   var $something$repeatList = F2(
     function (n, list) {
-      return (n <= 0) ? _List_Nil : _Utils_ap(
+      return (n <= 0) ? _List_Nil : _Utils_ap(_List_Nil, _Utils_ap(
         list,
-        A2($something$repeatList, n - 1, list));
+        A2($something$repeatList, n - 1, list)));
     });
   `;
 
