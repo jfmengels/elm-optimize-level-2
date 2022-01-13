@@ -1425,6 +1425,7 @@ function createListConcatContinuation(functionsToInsert : Set<string>, label : s
   }
 
   // TODO Support right-hand side
+  console.log(right)
   return result;
 }
 
