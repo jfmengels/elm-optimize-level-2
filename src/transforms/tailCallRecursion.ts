@@ -343,7 +343,7 @@ type Refinement =
     recursionType : FunctionRecursion | NotRecursiveFunction,
     returnType : "numbers" | "strings" | "lists" | "numbers-or-strings" | "strings-or-lists" | null,
     isMissingInformation : boolean,
-    // TODO
+    // TODO Fill value
     hasPlainRecursion: boolean,
   }
 
@@ -377,6 +377,13 @@ function determineRecursionType(functionName : string, body : ts.Node) : Functio
     else if (recursionType.kind < expressionRecursion.kind) {
       recursionType = expressionRecursion;
     }
+  }
+
+  if (refinement.isMissingInformation) {
+    if (refinement.hasPlainRecursion) {
+      return { kind: FunctionRecursionKind.F_PlainRecursion };
+    }
+    return { kind: FunctionRecursionKind.F_NotRecursive };
   }
 
   return recursionType;
