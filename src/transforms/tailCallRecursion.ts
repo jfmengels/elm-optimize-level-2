@@ -341,11 +341,13 @@ type MultiplyRecursion =
 type Refinement =
   {
     recursionType : FunctionRecursion | NotRecursiveFunction,
-    returnType : "numbers" | "strings" | "lists" | "numbers-or-strings" | "strings-or-lists" | null,
+    returnType : PossibleReturnTypes,
     isMissingInformation : boolean,
     // TODO Fill value
     hasPlainRecursion: boolean,
   }
+
+type PossibleReturnTypes = "numbers" | "strings" | "lists" | "numbers-or-strings" | "strings-or-lists" | null;
 
 function determineRecursionType(functionName : string, body : ts.Node) : FunctionRecursion | NotRecursiveFunction {
   let refinement : Refinement =
