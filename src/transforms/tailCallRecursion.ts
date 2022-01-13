@@ -348,6 +348,13 @@ type Refinement =
   }
 
 function determineRecursionType(functionName : string, body : ts.Node) : FunctionRecursion | NotRecursiveFunction {
+  let refinement : Refinement =
+    {
+      recursionType: { kind: FunctionRecursionKind.F_NotRecursive },
+      returnType : null,
+      isMissingInformation: false,
+      hasPlainRecursion: false
+    };
   let recursionType : FunctionRecursion | NotRecursiveFunction = { kind: FunctionRecursionKind.F_NotRecursive };
   const iter = findReturnStatements(body);
   let expression : ts.Expression | undefined;
