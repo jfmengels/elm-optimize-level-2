@@ -369,7 +369,7 @@ function determineRecursionType(functionName : string, body : ts.Node) : Functio
     if (next.done) { break; }
     expression = next.value;
 
-    const expressionRecursion : FunctionRecursion | NotRecursiveFunction = toFunctionRecursion(extractRecursionKindFromExpression(functionName, expression));
+    const expressionRecursion : FunctionRecursion | NotRecursiveFunction = toFunctionRecursion(refinement, extractRecursionKindFromExpression(functionName, expression));
     if (recursionType.kind === FunctionRecursionKind.F_DataConstructionRecursion
       && expressionRecursion.kind === FunctionRecursionKind.F_DataConstructionRecursion
       && expressionRecursion.property !== recursionType.property
@@ -1065,7 +1065,7 @@ function updateReturnStatementForMultipleDataConstruction(extract : Recursion | 
   ];
 }
 
-function toFunctionRecursion(recursion : Recursion | NotRecursive) : FunctionRecursion | NotRecursiveFunction {
+function toFunctionRecursion(refinement : Refinement, recursion : Recursion | NotRecursive) : FunctionRecursion | NotRecursiveFunction {
   switch (recursion.kind) {
     case RecursionTypeKind.NotRecursive:
       return { kind: FunctionRecursionKind.F_NotRecursive };
