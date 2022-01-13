@@ -338,6 +338,15 @@ type MultiplyRecursion =
     arguments : Array<ts.Expression>
   }
 
+type Refinement =
+  {
+    recursionType : FunctionRecursion | NotRecursiveFunction,
+    returnType : "numbers" | "strings" | "lists" | "numbers-or-strings" | "strings-or-lists" | null,
+    isMissingInformation : boolean,
+    // TODO
+    hasPlainRecursion: boolean,
+  }
+
 function determineRecursionType(functionName : string, body : ts.Node) : FunctionRecursion | NotRecursiveFunction {
   let recursionType : FunctionRecursion | NotRecursiveFunction = { kind: FunctionRecursionKind.F_NotRecursive };
   const iter = findReturnStatements(body);
