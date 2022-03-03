@@ -25,6 +25,7 @@ import { inlineNumberToString } from './transforms/inlineNumberToString';
 import { reportFunctionStatusInBenchmarks, v8Debug } from './transforms/analyze';
 import { recordUpdate } from './transforms/recordUpdate';
 import * as Replace from './transforms/replace';
+import {createRemoveUnusedRecordFieldsTransform} from "./transforms/removedUnusedRecordFields";
 
 export type Options = {
   compile: boolean;
@@ -115,6 +116,7 @@ export const transform = async (
     ],
     [transforms.arrowFns, convertFunctionExpressionsToArrowFuncs],
     [transforms.shorthandObjectLiterals, convertToObjectShorthandLiterals],
+    [true, createRemoveUnusedRecordFieldsTransform],
     [transforms.unusedValues, createRemoveUnusedLocalsTransform()],
     [transforms.recordUpdates, recordUpdate()],
     [transforms.v8Analysis, reportFunctionStatusInBenchmarks],
