@@ -3,6 +3,9 @@ import {InlineMode} from "./inlineListFromArray";
 
 export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.SourceFile> = context => {
     return sourceFile => {
+        const knownFields = new Set();
+        const usedFields = new Set();
+
         const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
             // detects [exp](..)
             if (ts.isCallExpression(node)) {
@@ -42,6 +45,11 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
 
             return ts.visitEachChild(node, visitor, context);
         };
+
+        // TMP
+        ts.visitNode(sourceFile, visitor);
+        console.log("known", [...knownFields])
+        console.log("used", [...usedFields])
 
         return ts.visitNode(sourceFile, visitor);
     };
