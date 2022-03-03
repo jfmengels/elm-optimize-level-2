@@ -18,9 +18,25 @@ test('it can remove definitions of record fields that are never used anywhere', 
   }
   console.log(a.used);
 })()`;
+
     const { actual, expected } = transformCode(
         initialCode,
         expectedOutputCode,
+        createRemoveUnusedRecordFieldsTransform
+    );
+
+    expect(actual).toBe(expected);
+});
+
+test('it should not remove fields from `_Platform_export`', () => {
+    const initialCode = `
+(function (){
+  _Platform_export({ "Main": { "init": $author$project$Main$main($elm$json$Json$Decode$value)(0) } });
+}(this));`;
+
+    const { actual, expected } = transformCode(
+        initialCode,
+        initialCode,
         createRemoveUnusedRecordFieldsTransform
     );
 

@@ -6,7 +6,10 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         const usedFields = new Set();
 
         const fieldsCollectorVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            if (ts.isObjectLiteralExpression(node)) {
+            if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "_Platform_export") {
+                return node;
+            }
+            else if (ts.isObjectLiteralExpression(node)) {
                 node.properties.forEach((it) =>
                     knownFields.add((it.name as ts.Identifier).text)
                 );
