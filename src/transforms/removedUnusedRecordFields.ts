@@ -7,40 +7,10 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         const usedFields = new Set();
 
         const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            // detects [exp](..)
-            if (ts.isCallExpression(node)) {
-                const expression = node.expression;
-                // detects _List_fromArray(..)
-                if (
-                    ts.isIdentifier(expression) &&
-                    expression.text === LIST_FROM_ARRAY_F_NAME &&
-                    node.arguments.length === 1
-                ) {
-                    const [arrayLiteral] = node.arguments;
-
-                    // detects _List_fromArray([..])
-                    if (ts.isArrayLiteralExpression(arrayLiteral)) {
-                        return arrayLiteral.elements.reduceRight(
-                            (list: ts.Expression, element: ts.Expression): ts.Expression => {
-                                return InlineMode.match(inlineMode, {
-                                    UsingConsFunc: (): ts.Expression =>
-                                        ts.createCall(listConsCall, undefined, [
-                                            ts.visitNode(element, visitor),
-                                            list,
-                                        ]),
-
-                                    UsingLiteralObjects: mode =>
-                                        ts.createObjectLiteral([
-                                            ts.createPropertyAssignment('$', listElementMarker(mode)),
-                                            ts.createPropertyAssignment('a', element),
-                                            ts.createPropertyAssignment('b', list),
-                                        ]),
-                                });
-                            },
-                            listNil
-                        );
-                    }
-                }
+            if (ts.isObjectLiteralExpression(node)) {
+                node.properties.forEach((it) =>
+                    knownFields.add((it.name as ts.Identifier).text)
+                );
             }
 
             return ts.visitEachChild(node, visitor, context);
