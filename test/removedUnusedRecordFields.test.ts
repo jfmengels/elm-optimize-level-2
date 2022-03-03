@@ -43,6 +43,29 @@ test('it should not remove fields from `_Platform_export`', () => {
     expect(actual).toBe(expected);
 });
 
+test('it should not touch code from native Elm functions (which start with a _)', () => {
+    const initialCode = `
+(function (){
+    function _Platform_createManager(init, onEffects, onSelfMsg, cmdMap, subMap) {
+        return {
+            b: init,
+            c: onEffects,
+            d: onSelfMsg,
+            e: cmdMap,
+            f: subMap
+        };
+    }
+}(this));`;
+
+    const { actual, expected } = transformCode(
+        initialCode,
+        initialCode,
+        createRemoveUnusedRecordFieldsTransform
+    );
+
+    expect(actual).toBe(expected);
+});
+
 export function transformCode(
     initialCode: string,
     expectedCode: string,

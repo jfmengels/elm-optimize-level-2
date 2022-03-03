@@ -25,7 +25,10 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         const fieldsToRemove = new Set([...knownFields].filter(x => !usedFields.has(x)));
 
         const fieldsRemoverVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            if (ts.isObjectLiteralExpression(node)) {
+            if (ts.isFunctionDeclaration(node) && node.name && node.name.text.startsWith("_")) {
+                return node;
+            }
+            else if (ts.isObjectLiteralExpression(node)) {
                 if (node.properties.some(it => fieldsToRemove.has((it.name as ts.Identifier).text))) {
                     const newNode =
                         ts.updateObjectLiteral(
