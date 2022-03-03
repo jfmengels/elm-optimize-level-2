@@ -1,5 +1,4 @@
 import ts from 'typescript';
-import {InlineMode} from "./inlineListFromArray";
 
 export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.SourceFile> = context => {
     return sourceFile => {
@@ -18,11 +17,27 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
             return ts.visitEachChild(node, fieldsCollectorVisitor, context);
         };
 
-        // TMP
         ts.visitNode(sourceFile, fieldsCollectorVisitor);
-        console.log("known", [...knownFields])
-        console.log("used", [...usedFields])
 
-        return ts.visitNode(sourceFile, fieldsCollectorVisitor);
+        const fieldsToRemove = new Set([...knownFields].filter(x => !usedFields.has(x)));
+
+        const fieldsRemoverVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
+            if (ts.isObjectLiteralExpression(node)) {
+                if (node.properties.some(it => fieldsToRemove.has((it.name as ts.Identifier).text))) {
+                    const newNode =
+                        ts.updateObjectLiteral(
+                            node,
+                            node.properties.filter(it => {
+                                return !fieldsToRemove.has((it.name as ts.Identifier).text)
+                            })
+                        );
+                    return ts.visitEachChild(newNode, fieldsRemoverVisitor, context);
+                }
+            }
+
+            return ts.visitEachChild(node, fieldsRemoverVisitor, context);
+        };
+
+        return ts.visitNode(sourceFile, fieldsRemoverVisitor);
     };
 };
