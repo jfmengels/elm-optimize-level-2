@@ -11,6 +11,8 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
                 node.properties.forEach((it) =>
                     knownFields.add((it.name as ts.Identifier).text)
                 );
+            } else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier((node.name))) {
+                usedFields.add(node.name.text);
             }
 
             return ts.visitEachChild(node, visitor, context);
