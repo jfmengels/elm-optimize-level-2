@@ -5,10 +5,7 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         const usedFields = new Set();
 
         const fieldsCollectorVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            if (shouldBeAvoided(node)) {
-                return node;
-            }
-            else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier((node.name))) {
+            if (ts.isPropertyAccessExpression(node) && ts.isIdentifier((node.name))) {
                 usedFields.add(node.name.text);
             }
 
