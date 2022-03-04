@@ -44,5 +44,6 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
 function shouldBeAvoided(node: ts.Node): boolean {
     return (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "_Platform_export")
         || (ts.isFunctionDeclaration(node) && node.name && node.name.text.startsWith("_"))
+        || (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text.startsWith("_"))
         || ts.isTryStatement(node)
 }

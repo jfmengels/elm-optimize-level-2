@@ -55,6 +55,11 @@ test('it should not touch code from native Elm functions (which start with a _)'
             f: subMap
         };
     }
+    var _Markdown_marked = function () {
+        return {
+            z: 1
+        };
+    }
 }(this));`;
 
     const { actual, expected } = transformCode(
