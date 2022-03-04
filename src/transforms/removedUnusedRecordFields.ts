@@ -22,8 +22,6 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
 
         ts.visitNode(sourceFile, fieldsCollectorVisitor);
 
-        const fieldsToRemove = new Set([...knownFields].filter(x => !usedFields.has(x)));
-
         const fieldsRemoverVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
             if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "_Platform_export") {
                 return node;
