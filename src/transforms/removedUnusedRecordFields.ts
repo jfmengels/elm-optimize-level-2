@@ -1,5 +1,7 @@
 import ts from 'typescript';
 
+const SHOULD_LOG = true;
+
 export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.SourceFile> = context => {
     return sourceFile => {
         const usedFields = new Set();
@@ -14,6 +16,8 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
 
         ts.visitNode(sourceFile, fieldsCollectorVisitor);
 
+        const fieldsRemoved = new Set();
+
         const fieldsRemoverVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
             if (shouldBeAvoided(node)) {
                 return node;
@@ -24,7 +28,12 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
                         ts.updateObjectLiteral(
                             node,
                             node.properties.filter(it => {
-                                return usedFields.has((it.name as ts.Identifier).text)
+                                const name = (it.name as ts.Identifier).text;
+                                const keep = usedFields.has(name);
+                                if (!keep) {
+                                    fieldsRemoved.add(name);
+                                }
+                                return keep;
                             })
                         );
                     return ts.visitEachChild(newNode, fieldsRemoverVisitor, context);
@@ -34,7 +43,17 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
             return ts.visitEachChild(node, fieldsRemoverVisitor, context);
         };
 
-        return ts.visitNode(sourceFile, fieldsRemoverVisitor);
+        const newAst = ts.visitNode(sourceFile, fieldsRemoverVisitor);
+
+        if (SHOULD_LOG) {
+            const formattedRemovedFields = [...fieldsRemoved]
+                .map(field => `    ${field}`)
+                .join("\n");
+
+            console.log(`\nI have removed the following fields:\n${formattedRemovedFields}\n`)
+        }
+
+        return newAst;
     };
 };
 
