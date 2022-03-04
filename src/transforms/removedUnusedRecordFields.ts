@@ -32,7 +32,7 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
                 return node;
             }
             else if (ts.isObjectLiteralExpression(node)) {
-                if (node.properties.some(it => fieldsToRemove.has((it.name as ts.Identifier).text))) {
+                if (node.properties.some(it => !usedFields.has((it.name as ts.Identifier).text))) {
                     const newNode =
                         ts.updateObjectLiteral(
                             node,
