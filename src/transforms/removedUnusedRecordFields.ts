@@ -21,6 +21,9 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
             else if (ts.isFunctionDeclaration(node) && node.name && node.name.text.startsWith("_")) {
                 return node;
             }
+            else if (ts.isTryStatement(node)) {
+                return node;
+            }
             else if (ts.isObjectLiteralExpression(node)) {
                 if (node.properties.some(it => !usedFields.has((it.name as ts.Identifier).text))) {
                     const newNode =

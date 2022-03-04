@@ -66,6 +66,26 @@ test('it should not touch code from native Elm functions (which start with a _)'
     expect(actual).toBe(expected);
 });
 
+test('it should not touch code from inside try catches', () => {
+    const initialCode = `
+(function (){
+    try {
+        window.addEventListener("t", null, Object.defineProperty({}, "passive", {
+            get: function () { _VirtualDom_passiveSupported = true; }
+        }));
+    }
+    catch (e) { }
+}(this));`;
+
+    const { actual, expected } = transformCode(
+        initialCode,
+        initialCode,
+        createRemoveUnusedRecordFieldsTransform
+    );
+
+    expect(actual).toBe(expected);
+});
+
 export function transformCode(
     initialCode: string,
     expectedCode: string,
