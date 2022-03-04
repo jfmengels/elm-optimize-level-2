@@ -15,13 +15,7 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         ts.visitNode(sourceFile, fieldsCollectorVisitor);
 
         const fieldsRemoverVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "_Platform_export") {
-                return node;
-            }
-            else if (ts.isFunctionDeclaration(node) && node.name && node.name.text.startsWith("_")) {
-                return node;
-            }
-            else if (ts.isTryStatement(node)) {
+            if (shouldBeAvoided(node)) {
                 return node;
             }
             else if (ts.isObjectLiteralExpression(node)) {
@@ -43,3 +37,9 @@ export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.S
         return ts.visitNode(sourceFile, fieldsRemoverVisitor);
     };
 };
+
+function shouldBeAvoided(node: ts.Node): boolean {
+    return (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "_Platform_export")
+        || (ts.isFunctionDeclaration(node) && node.name && node.name.text.startsWith("_"))
+        || ts.isTryStatement(node)
+}
