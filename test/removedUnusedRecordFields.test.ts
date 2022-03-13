@@ -28,6 +28,40 @@ test('it can remove definitions of record fields that are never used anywhere', 
     expect(actual).toBe(expected);
 });
 
+test('it can remove definitions of record fields that are only used in reference to themselves', () => {
+    const initialCode = `
+(function () {
+  var a = {
+    used: 1,
+    unused: 2
+  }
+  var b = {
+    used: a.used,
+    unused: foo(b.unused)
+  }
+  console.log(a.used);
+})()`;
+
+    const expectedOutputCode = `
+(function (){
+  var a = {
+    used: 1
+  }
+  var b = {
+    used: a.used
+  }
+  console.log(a.used);
+})()`;
+
+    const { actual, expected } = transformCode(
+        initialCode,
+        expectedOutputCode,
+        createRemoveUnusedRecordFieldsTransform
+    );
+
+    expect(actual).toBe(expected);
+});
+
 test('it should not remove fields from `_Platform_export`', () => {
     const initialCode = `
 (function (){

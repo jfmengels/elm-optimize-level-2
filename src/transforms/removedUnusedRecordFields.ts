@@ -5,10 +5,19 @@ const SHOULD_LOG = true;
 export const createRemoveUnusedRecordFieldsTransform: ts.TransformerFactory<ts.SourceFile> = context => {
     return sourceFile => {
         const usedFields = new Set();
+        let currentPropertyAssignments : Array<string> = [];
 
         const fieldsCollectorVisitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
-            if (ts.isPropertyAccessExpression(node) && ts.isIdentifier((node.name))) {
-                usedFields.add(node.name.text);
+            if (ts.isPropertyAssignment(node) && ts.isIdentifier((node.name))) {
+                currentPropertyAssignments.push(node.name.text);
+                const newNode = ts.visitEachChild(node, fieldsCollectorVisitor, context);
+                currentPropertyAssignments.pop();
+                return newNode;
+            }
+            else if (ts.isPropertyAccessExpression(node) && ts.isIdentifier((node.name)) && !currentPropertyAssignments.includes(node.name.text)) {
+                if (!currentPropertyAssignments.includes(node.name.text)) {
+                    usedFields.add(node.name.text);
+                }
             }
 
             return ts.visitEachChild(node, fieldsCollectorVisitor, context);
